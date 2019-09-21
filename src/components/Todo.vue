@@ -1,10 +1,15 @@
 <template>
   <div class="container">
     <h1>Latest Todos</h1>
+    <div class="create-post">
+      <label for="create-post">What's your Todo?</label>
+      <input type="text" id="create-post" v-model="todo" v-on:keyup.enter="createTodo" placeholder="Task" >
+      <button v-on:click="createTodo">Add</button>
+    </div>
     <hr />
     <p class="error" v-if="error">{{ error }}</p>
     <div class="posts-container">
-      <div class="post" v-for="todo in todos" v-bind:key="todo._id">
+      <div class="post" v-for="todo in todos" v-bind:key="todo._id" v-on:dblclick="deleteTodo(todo._id)">
         {{ `${todo.createdAt.getDate()}/${todo.createdAt.getMonth()}/${todo.createdAt.getFullYear()}` }}
         <p class="text">{{ todo.text }}</p>
       </div>
@@ -30,6 +35,17 @@ export default {
     } catch (e) {
       this.error = e.message;
     }
+  },
+  methods: {
+    async createTodo() {
+      await TodoService.insertTodo(this.todo);
+      this.todos = await TodoService.getTodos();
+      this.todo = '';
+    },
+    async deleteTodo(id) {
+      await TodoService.deleteTodo(id);
+      this.todos = await TodoService.getTodos();
+    },
   },
 };
 </script>

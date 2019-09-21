@@ -7,9 +7,9 @@ class TodoService {
     return new Promise(async (resolve, reject) => {
       try {
         const res = await axios.get(url);
-        const data = res.data;
+        // console.log("resolving todos list from API")
         resolve(
-          data.map(todo => ({
+          res.data.map(todo => ({
             ...todo,
             createdAt: new Date(todo.createdAt),
           })),
@@ -20,20 +20,15 @@ class TodoService {
     });
   }
 
-  static getTodosThen() {
-    return axios.get(url).then(res => res.data).then(data => data.map(todo => ({
-      ...todo,
-      createdAt: new Date(todo.createdAt),
-    })));
-  }
-
   static insertTodo(todo) {
+    // console.log("inserting todo in API: " + todo)
     return axios.post(url, {
-      todo,
+      text: todo,
     });
   }
 
   static deleteTodo(todoID) {
+    // console.log("deleting todo in API: " + todoID)
     return axios.delete(`${url}/${todoID}`);
   }
 }
